@@ -36,7 +36,7 @@ kvartirakgBot = '1904271012:AAH0GvWw_c1tlGv6o6tZe0sslZTQK3UZCEM'
 bot = TeleBot(token=f'{kvartirakgBot}')
 # Фильтрация обьявлений на от агентство и от частника
 def filter_AN(link_user):
-    r = requests.get(link_user, headers=headers, timeout=5)
+    r = requests.get(link_user, headers=headers,proxies=get_proxy(proxy_list), timeout=5)
     soup = Bs(r.text, features="html.parser")
     ads = (soup.findAll('a', class_='adTile-mainInfo'))
 
@@ -59,7 +59,6 @@ def base_add(rooms, series, ploshad, remont, etaj, etaj_iz, rayon, prodaves, pri
              photo_links,data_soz,data_prod):
     with sq.connect('version_1/lalago.db') as con:
         cur = con.cursor()
-
     cur.execute(
         f"INSERT INTO base (rooms,series,ploshad,remont,etaj,etaj_iz,rayon,prodaves, price, an, add_link, poslednyi_et, photo_links,data_soz, data_prod) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)",
         ( int(rooms), str(series), int(ploshad), str(remont), int(etaj), int(etaj_iz),str(rayon),str(prodaves), price, str(AN), str(add_link), str(poslednyi_et), str(photo_links) ,str(data_soz), str(data_prod)

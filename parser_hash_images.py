@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlite3 as sq
 import time
-import requests
 from bs4 import BeautifulSoup as Bs
 from threading import Thread
 from fake_useragent import UserAgent
@@ -9,14 +8,13 @@ from PIL import Image
 import imagehash
 import random
 from config import *
+import requests
 
 
 def get_proxy(proxy_list):
     proxy = random.choice(proxy_list)
     proxies = {"http": f'http://{proxy}', "https": f'http://{proxy}'}
     return proxies
-
-
 def get_useragent():
     my_browser = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17/Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
     try:
@@ -28,7 +26,6 @@ def get_useragent():
     except Exception as e:
         print(e)
         return my_browser
-
 headers = {'User-Agent': get_useragent()}
 
 def Starter_parser_stroka():
@@ -249,6 +246,7 @@ def chech_house_kg():
 
 def start():
     Thread(target=Starter_parser_lalafo, args=()).start()
-    Thread(target=Starter_parser_stroka, args=()).start()
-    Thread(target=Starter_parser_house_kg, args=()).start()
+    # Thread(target=Starter_parser_stroka, args=()).start()
+    # Thread(target=Starter_parser_house_kg, args=()).start()
 
+start()
