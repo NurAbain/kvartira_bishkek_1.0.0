@@ -99,6 +99,7 @@ def Starter_check_lalafo_kg():
             check_lalafo_kg()
             time.sleep(600)
         except:
+            print('exept parser_kvartiry')
             time.sleep(1800)
             continue
 
@@ -718,6 +719,7 @@ def start():
     Thread(target=Starter_check_lalafo_kg(), args=()).start()
 
 
+start()
 
 
 
