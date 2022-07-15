@@ -2,6 +2,8 @@
 from telebot import types
 import sqlite3 as sq
 from datetime import date
+from PIL import Image
+import imagehash
 import time
 import datetime
 import requests
@@ -11,6 +13,7 @@ from fake_useragent import UserAgent
 import random
 from threading import Thread
 from config import *
+
 def get_proxy(proxy_list):
     proxy = random.choice(proxy_list)
     proxies = {"http": f'http://{proxy}', "https": f'http://{proxy}'}
@@ -27,8 +30,53 @@ def get_useragent():
         print(e)
         return my_browser
 
-
 headers = {'User-Agent': get_useragent()}
+
+
+def Starter_skaner_kvartir_lalafo():
+    while True:
+        try:
+            skaner_kvartir_lalafo()
+            time.sleep(600)
+        except:
+            time.sleep(1800)
+            continue
+def skaner_kvartir_lalafo():
+    for i in range(0, 1200):
+        try:
+            with sq.connect('lalago.db') as con:
+                cur = con.cursor()
+                cur.execute("""CREATE TABLE IF NOT EXISTS link_kv (
+                link TEXT,
+                scan_date TEXT
+                )""")
+
+            print(f'СТРАНИЦА: {i}')
+            url = f'https://lalafo.kg/bishkek/kvartiry/prodazha-kvartir?page={i}'
+            r = requests.get(url, headers=headers,proxies=get_proxy(proxy_list), timeout=5)
+            soup = Bs(r.text, features="html.parser")
+            scan_date = datetime.date.today()
+            print(scan_date)
+            for i in str(soup).split('"'):
+                if '/bishkek/ads/' in i:
+                    add_link = 'https://lalafo.kg' + i
+                    cur.execute(f"SELECT link FROM link_kv where link =?", (add_link,))
+                    try:
+                        if cur.fetchone() is None:
+
+                            cur.execute(
+                                f"INSERT INTO link_kv (link, scan_date) VALUES(?, ?)",
+                                (
+                                    str(add_link), str(scan_date)))
+                            con.commit()
+                        else:
+
+                            continue
+                    except:
+                        continue
+            time.sleep(5)
+        except:
+            time.sleep(600)
 
 # Фильтрация обьявлений на от агентство и от частника
 def filter_AN(link_user):
@@ -60,7 +108,6 @@ def base_add(rooms, series, ploshad, remont, etaj, etaj_iz, rayon, prodaves, pri
         ( int(rooms), str(series), int(ploshad), str(remont), int(etaj), int(etaj_iz),str(rayon),str(prodaves), price, str(AN), str(add_link), str(poslednyi_et), str(photo_links) ,str(data_soz), str(data_prod)
         ))
     con.commit()
-
 # Сравнение квартиры с похожимы квартирами
 def osenka_kv(series, remont, rooms, rayon, etaj, etaj_iz, poslednyi_et):
     with sq.connect('../base_3.db') as con:
@@ -98,7 +145,6 @@ def Starter_check_lalafo_kg():
             print('exept parser_kvartiry')
             time.sleep(1800)
             continue
-
 def check_lalafo_kg():
     rayon_list = {
         '3 мкр': ['3 мкр', '3мкр', '3мик', '3-ми', '3-мкр', '3 мик'],
@@ -710,12 +756,224 @@ def check_lalafo_kg():
             except:
                 continue
 
+def Starter_parser_stroka():
+    while True:
+        try:
+            check_stroka_kg()
+            time.sleep(30)
+        except:
 
-Thread(target=Starter_check_lalafo_kg(), args=()).start()
+            time.sleep(20)
+            continue
+def Starter_parser_house_kg():
+    while True:
+        try:
+
+            chech_house_kg()
+            time.sleep(30)
+        except:
+
+            time.sleep(20)
+            continue
+def Starter_parser_hash_lalafo():
+    while True:
+        try:
+
+            parser_hash_lalafo_kg()
+            time.sleep(30)
+
+        except:
+
+            time.sleep(60)
+            continue
+
+def parser_hash_lalafo_kg():
+
+    with sq.connect('version_1/lalago.db') as con:
+        cur = con.cursor()
+        cur.execute("""CREATE TABLE IF NOT EXISTS db_hash_images (add_link TEXT, images_hash TEXT)""")
+        con.commit()
+        list_link = cur.execute(f"SELECT link FROM link_kv ")
+        colvo = 0
+        for add_link in list_link:
+            try:
+                add_link = ((str(add_link)).replace("',)",'')).replace("('","")
+                print(add_link)
+                cur = con.cursor()
+                cur.execute(f"SELECT add_link FROM db_hash_images where add_link =?", (add_link,))
+
+                if cur.fetchone() is None:
+                    colvo = colvo + 1
+
+                    # Парсим обявлений
+                    r = requests.get(add_link, headers=headers, proxies=get_proxy(proxy_list), timeout=5)
+                    soup = Bs(r.text, features="html.parser")
+                    image = soup.find('div', class_='desktop css-10yjukn')
+
+                    images_hash = []
+                    unique = []
+                    for i in str(image).split('"'):
+
+                        if 'https://img5.lalafo.com/i/posters/api' in i:
+                            if i in unique:
+                                continue
+                            else:
+                                unique.append(i)
+                                try:
+                                    image_data = Image.open(requests.get(i, stream=True).raw)
+
+                                    hash = imagehash.phash(image_data)
+
+                                    images_hash.append(str(hash))
+                                except:
+                                    continue
+
+
+                    if str(images_hash) == '[]':
+
+                        for i in str(image).split('"'):
+                            if 'https://img5.lalafo.com/i/posters/' in i:
+                                if i in unique:
+                                    continue
+                                else:
+                                    unique.append(i)
+                                    try:
+                                        image_data = Image.open(requests.get(i, stream=True).raw)
+
+                                        hash = imagehash.phash(image_data)
+
+                                        images_hash.append(str(hash))
+                                    except:
+                                        continue
+
+                    if str(images_hash) == '[]':
+                        continue
+
+                    else:
+                        print(add_link)
+                        print(images_hash)
+                        cur = con.cursor()
+                        cur.execute(f'INSERT INTO db_hash_images (add_link,images_hash) VALUES(?,?)',(str(add_link),str(images_hash)))
+                        con.commit()
+                        continue
+
+                else:
+                    print('уже в базе!!!')
+                    continue
+
+            except Exception as e:
+                print('exept1')
+                print(e)
+                continue
+
+        print('connect')
+def check_stroka_kg():
+    for i in range(0, 15):
+        #ФИЛЬТР ПОСЛЕДНИЕ СОЗДАННЫЕ
+        url = f'https://stroka.kg/kupit-kvartiru/?q=&topic_image=on&order=date&cost_min=&cost_max=&topic_point=bishkek&p={i}#paginator'
+        # url = 'https://stroka.kg/kupit-kvartiru/?q&order=date&cost_min&cost_max&topic_point=bishkek'
+        r = requests.get(url, headers=headers, proxies=get_proxy(proxy_list), timeout=5)
+        soup = Bs(r.text, features="html.parser")
+        list = soup.find_all('a', class_='topics-item-view')
+
+        for i in list:
+            i = i['href']
+            add_link = i.replace('amp;', '')  # Ссылка на обьявления
+            with sq.connect('version_1/lalago.db') as con:
+                cur = con.cursor()
+
+                cur.execute(f"SELECT add_link FROM db_hash_images where add_link =?", (add_link,))
+
+                if cur.fetchone() is None:
+
+                    r = requests.get(add_link, headers=headers)
+                    soup = Bs(r.text, features="html.parser")
+                    image_url = soup.find_all('div', class_='topic-best-view-block-50 topic-best-view-block-50__image')
+
+                    images_hash2 = []
+                    unique2 = []
+                    for i in (str(image_url)).split("'"):
+                        if 'https://data.stroka.kg/image' in i:
+
+                            if i in unique2:
+                                continue
+                            else:
+                                unique2.append(i)
+                                try:
+
+                                    image_data = Image.open(requests.get(i, stream=True).raw)
+                                    hash = imagehash.phash(image_data)
+                                    images_hash2.append(str(hash))
+
+                                except:
+                                    continue
+
+                    if str(images_hash2) == '[]':
+                        continue
+                    else:
+                        cur.execute(
+                            f'INSERT INTO db_hash_images (add_link,images_hash) VALUES("{add_link}", "{images_hash2}")')
+                        con.commit()
+
+
+                else:
+
+                    continue
+def chech_house_kg():
+    for i in range(1, 1000):
+
+        try:
+            url = f'https://www.house.kg/kupit-kvartiru?region=1&town=2&has_photo=1&sort_by=m2_price+asc&page={i}'
+            r = requests.get(url, headers=headers, timeout=5)
+            soup = Bs(r.text, features="html.parser")
+            link = soup.find_all('p', class_='title', )
+            for i in link:
+                try:
+                    add_link_house = 'https://www.house.kg' + str(i.find('a').get('href'))
+                    with sq.connect('version_1/lalago.db') as con:
+                        cur = con.cursor()
+                        cur.execute(f"SELECT add_link FROM db_hash_images where add_link =?", (add_link_house,))
+
+                    if cur.fetchone() is None:
+                        r = requests.get(add_link_house, headers=headers, timeout=5)
+                        soup = Bs(r.text, features="html.parser")
+                        images_hash3 = []
+                        unique = []
+                        for i in (str(soup)).split('"'):
+                            if '1200x900.jpg' in i:
+                                if i in unique:
+                                    continue
+                                else:
+                                    unique.append(i)
+                                    try:
+                                        image_data = Image.open(requests.get(i, stream=True).raw)
+                                        hash = imagehash.phash(image_data)
+                                        images_hash3.append(str(hash))
+                                    except:
+                                        continue
+
+                        if str(images_hash3) == '[]':
+                            continue
+                        else:
+                            cur.execute(
+                                f'INSERT INTO db_hash_images (add_link,images_hash) VALUES("{add_link_house}", "{images_hash3}")')
+                            con.commit()
+
+                    else:
+                        continue
+
+                except:
+                    print('ОШИБКА ВНУТРИ ОБЬЯВЛЕНИИ HAUSE.KG')
+                    continue
+
+        except:
+            print('Ошибка на странице!!!')
+            continue
 
 
 
 
-
-
+Thread(target=Starter_check_lalafo_kg, args=()).start()
+Thread(target=Starter_skaner_kvartir_lalafo, args=()).start()
+Thread(target=Starter_parser_hash_lalafo, args=()).start()
 

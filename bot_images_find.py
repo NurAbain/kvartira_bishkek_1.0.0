@@ -692,3 +692,4 @@ def parser_hash_photo(user, hash_photos):
 def start():
     Thread(target=Starter_botmen, args=()).start()
 
+start()

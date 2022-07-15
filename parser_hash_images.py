@@ -249,3 +249,5 @@ def start():
     # Thread(target=Starter_parser_stroka, args=()).start()
     # Thread(target=Starter_parser_house_kg, args=()).start()
 
+
+start()
