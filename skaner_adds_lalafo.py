@@ -77,7 +77,9 @@ def skaner_kvartir_lalafo():
         except:
             time.sleep(600)
 
-Thread(target=Starter_skaner_kvartir_lalafo(), args=()).start()
+
+def start():
+    Thread(target=Starter_skaner_kvartir_lalafo(), args=()).start()
 
 
 

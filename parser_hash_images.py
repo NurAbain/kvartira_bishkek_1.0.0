@@ -246,7 +246,9 @@ def chech_house_kg():
             continue
 
 
-Thread(target=Starter_parser_lalafo, args=()).start()
-Thread(target=Starter_parser_stroka, args=()).start()
-Thread(target=Starter_parser_house_kg, args=()).start()
+
+def start():
+    Thread(target=Starter_parser_lalafo, args=()).start()
+    Thread(target=Starter_parser_stroka, args=()).start()
+    Thread(target=Starter_parser_house_kg, args=()).start()
 

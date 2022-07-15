@@ -715,8 +715,8 @@ def check_lalafo_kg():
                     except:
                         continue
 
-
-Thread(target=Starter_check_lalafo_kg(), args=()).start()
+def start():
+    Thread(target=Starter_check_lalafo_kg(), args=()).start()
 
 
 

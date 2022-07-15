@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
-import sqlite3 as sq
-import time
-import requests
-from bs4 import BeautifulSoup as Bs
-from telebot import TeleBot
-from telebot import types
-from threading import Thread
-from fake_useragent import UserAgent
-from PIL import Image
-import imagehash
-import distance
-import random
-from config import *
-import psycopg2
+import parser_kvartiry
+import  skaner_adds_lalafo
+import parser_hash_images
+import bot_images_find
+
+if __name__ == "__main__":
+    skaner_adds_lalafo.start()
+    parser_kvartiry.start()
+    parser_hash_images.start()
+    bot_images_find.start()
+
+
+
 
 
 

@@ -688,5 +688,5 @@ def parser_hash_photo(user, hash_photos):
         else:
             continue
 
-
-Thread(target=Starter_botmen, args=()).start()
+def start():
+    Thread(target=Starter_botmen, args=()).start()
