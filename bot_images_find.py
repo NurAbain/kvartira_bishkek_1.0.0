@@ -88,9 +88,10 @@ def botmen():
         markup.add(btn1)
         bot.send_message(message.chat.id, text='фото получень',reply_markup=markup)
 
-
-
     bot.polling(none_stop=True)
+
+
+
 def parser_hash_hamming(user, link, dist):
 
     with sq.connect('version_1/lalago.db') as con:

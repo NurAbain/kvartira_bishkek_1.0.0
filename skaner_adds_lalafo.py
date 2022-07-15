@@ -81,5 +81,6 @@ def skaner_kvartir_lalafo():
 def start():
     Thread(target=Starter_skaner_kvartir_lalafo(), args=()).start()
 
+start()
 
 
