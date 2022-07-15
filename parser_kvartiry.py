@@ -10,14 +10,11 @@ from telebot import TeleBot
 from fake_useragent import UserAgent
 import random
 from threading import Thread
-
 from config import *
-
 def get_proxy(proxy_list):
     proxy = random.choice(proxy_list)
     proxies = {"http": f'http://{proxy}', "https": f'http://{proxy}'}
     return proxies
-
 def get_useragent():
     my_browser = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
     try:
@@ -29,6 +26,7 @@ def get_useragent():
     except Exception as e:
         print(e)
         return my_browser
+
 
 headers = {'User-Agent': get_useragent()}
 
@@ -95,9 +93,6 @@ def osenka_kv(series, remont, rooms, rayon, etaj, etaj_iz, poslednyi_et):
 
     except:
         pass
-
-
-
 
 def Starter_check_lalafo_kg():
     while True:

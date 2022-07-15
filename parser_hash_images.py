@@ -8,27 +8,15 @@ from fake_useragent import UserAgent
 from PIL import Image
 import imagehash
 import random
+from config import *
 
-
-proxy_list = [
-    '217.29.63.159:10780',
-    '217.29.63.159:10779',
-    '217.29.63.159:10778',
-    '217.29.63.159:10777',
-    '217.29.63.159:10776',
-    '217.29.63.159:10775',
-    '217.29.63.159:10774',
-    '217.29.63.159:10773',
-    '217.29.63.159:10772',
-    '217.29.63.159:10771',
-    '217.29.63.159:10770',
-    '217.29.63.159:10769'
-]
 
 def get_proxy(proxy_list):
     proxy = random.choice(proxy_list)
     proxies = {"http": f'http://{proxy}', "https": f'http://{proxy}'}
     return proxies
+
+
 def get_useragent():
     my_browser = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17/Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
     try:
@@ -260,5 +248,5 @@ def chech_house_kg():
 
 Thread(target=Starter_parser_lalafo, args=()).start()
 Thread(target=Starter_parser_stroka, args=()).start()
-Thread(target=Starter_parser_house_kg, args=()).start
+Thread(target=Starter_parser_house_kg, args=()).start()
 

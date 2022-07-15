@@ -18,4 +18,13 @@ proxy_list = [
 ]
 
 
+abain_bot = '1975239869:AAGytpbRIP0Gi8yO5_bj07MtyhTqmEPJc7I'
+kvartirakgBot = '1904271012:AAH0GvWw_c1tlGv6o6tZe0sslZTQK3UZCEM'
+botapi = kvartirakgBot
+
+
+
+
+
+
 

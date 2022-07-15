@@ -11,7 +11,7 @@ from PIL import Image
 import imagehash
 import distance
 import random
-
+from config import *
 def get_proxy(proxy_list):
     proxy = random.choice(proxy_list)
     proxies = {"http": f'http://{proxy}', "https": f'http://{proxy}'}
@@ -29,11 +29,7 @@ def get_useragent():
         return my_browser
 
 headers = {'User-Agent': get_useragent()}
-
-
-abain_bot = '1975239869:AAGytpbRIP0Gi8yO5_bj07MtyhTqmEPJc7I'
-kvartirakgBot = '1904271012:AAH0GvWw_c1tlGv6o6tZe0sslZTQK3UZCEM'
-bot = TeleBot(token=f'{kvartirakgBot}')
+bot = TeleBot(token=f'{botapi}')
 
 def Starter_botmen():
     while True:
@@ -694,4 +690,3 @@ def parser_hash_photo(user, hash_photos):
 
 
 Thread(target=Starter_botmen, args=()).start()
-
