@@ -1,3 +1,6 @@
+
+
+
 DB_URI = 'postgres://dbwydyijctjcsk:0953c22b479da88d9136d4543f1108c47e6d2df50f3f686a87b42cc5fa841acb@ec2-54-75-184-144.eu-west-1.compute.amazonaws.com:5432/dpv4vf5obctfl'
 proxy_list = [
     '217.29.63.159:10780',
@@ -13,4 +16,6 @@ proxy_list = [
     '217.29.63.159:10770',
     '217.29.63.159:10769'
 ]
+
+
 

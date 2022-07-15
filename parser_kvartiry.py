@@ -7,13 +7,10 @@ import datetime
 import requests
 from bs4 import BeautifulSoup as Bs
 from telebot import TeleBot
-from keyboa.keyboards import keyboa_maker
-from threading import Thread
 from fake_useragent import UserAgent
 import random
-from PIL import Image
-import imagehash
-import distance
+from threading import Thread
+
 from config import *
 
 def get_proxy(proxy_list):
@@ -100,42 +97,16 @@ def osenka_kv(series, remont, rooms, rayon, etaj, etaj_iz, poslednyi_et):
         pass
 
 
-def skaner_kvartir_lalafo():
-    for i in range(0, 1200):
+
+
+def Starter_check_lalafo_kg():
+    while True:
         try:
-            with sq.connect('lalago.db') as con:
-                cur = con.cursor()
-                cur.execute("""CREATE TABLE IF NOT EXISTS link_kv (
-                link TEXT,
-                scan_date TEXT
-                )""")
-
-            print(f'СТРАНИЦА: {i}')
-            url = f'https://lalafo.kg/bishkek/kvartiry/prodazha-kvartir?page={i}'
-            r = requests.get(url, headers=headers,proxies=get_proxy(proxy_list), timeout=5)
-            soup = Bs(r.text, features="html.parser")
-            scan_date = datetime.date.today()
-            print(scan_date)
-            for i in str(soup).split('"'):
-                if '/bishkek/ads/' in i:
-                    add_link = 'https://lalafo.kg' + i
-                    cur.execute(f"SELECT link FROM link_kv where link =?", (add_link,))
-                    try:
-                        if cur.fetchone() is None:
-
-                            cur.execute(
-                                f"INSERT INTO link_kv (link, scan_date) VALUES(?, ?)",
-                                (
-                                    str(add_link), str(scan_date)))
-                            con.commit()
-                        else:
-
-                            continue
-                    except:
-                        continue
-            time.sleep(5)
-        except:
+            check_lalafo_kg()
             time.sleep(600)
+        except:
+            time.sleep(1800)
+            continue
 
 def check_lalafo_kg():
     rayon_list = {
@@ -750,5 +721,10 @@ def check_lalafo_kg():
                         continue
 
 
-skaner_kvartir_lalafo()
+Thread(target=Starter_check_lalafo_kg(), args=()).start()
+
+
+
+
+
 
