@@ -12,6 +12,8 @@ import imagehash
 import distance
 import random
 from config import *
+
+
 def get_proxy(proxy_list):
     proxy = random.choice(proxy_list)
     proxies = {"http": f'http://{proxy}', "https": f'http://{proxy}'}
@@ -39,8 +41,6 @@ def Starter_botmen():
         except:
             time.sleep(10)
             continue
-
-
 def botmen():
     global hash_import_photo
     hash_import_photo = []
@@ -89,9 +89,6 @@ def botmen():
         bot.send_message(message.chat.id, text='фото получень',reply_markup=markup)
 
     bot.polling(none_stop=True)
-
-
-
 def parser_hash_hamming(user, link, dist):
 
     with sq.connect('version_1/lalago.db') as con:
@@ -689,7 +686,4 @@ def parser_hash_photo(user, hash_photos):
         else:
             continue
 
-def start():
-    Thread(target=Starter_botmen, args=()).start()
-
-start()
+Thread(target=Starter_botmen, args=()).start()
